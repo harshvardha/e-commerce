@@ -5,7 +5,6 @@
 package database
 
 import (
-	"database/sql"
 	"encoding/json"
 	"time"
 
@@ -41,8 +40,17 @@ type Product struct {
 	UpdatedAt   time.Time
 }
 
+type RefreshToken struct {
+	Token     string
+	UserID    uuid.UUID
+	ExpiresAt time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 type Seller struct {
-	ID                    uuid.UUID
+	ID                    string
+	UserID                uuid.UUID
 	GstNumber             string
 	PanNumber             string
 	PickupAddress         string
@@ -51,21 +59,21 @@ type Seller struct {
 	IfscCode              string
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
-	UserID                uuid.UUID
 }
 
 type Store struct {
 	ID        uuid.UUID
 	Name      string
-	OwnerID   uuid.UUID
+	OwnerID   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 type User struct {
 	ID          uuid.UUID
-	Email       sql.NullString
-	PhoneNumber sql.NullString
+	Email       string
+	PhoneNumber string
+	Password    string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

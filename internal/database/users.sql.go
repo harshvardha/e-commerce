@@ -7,7 +7,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -21,12 +20,12 @@ values(
     NOW(),
     NOW()
 )
-returning id, email, phone_number, created_at, updated_at
+returning id, email, phone_number, password, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	Email       sql.NullString
-	PhoneNumber sql.NullString
+	Email       string
+	PhoneNumber string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -36,6 +35,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.ID,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.Password,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -44,7 +44,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 
 const deleteUser = `-- name: DeleteUser :one
 delete from users where id = $1 
-returning id, email, phone_number, created_at, updated_at
+returning id, email, phone_number, password, created_at, updated_at
 `
 
 func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) (User, error) {
@@ -54,6 +54,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.ID,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.Password,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -61,7 +62,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) (User, error) {
 }
 
 const getUser = `-- name: GetUser :one
-select id, email, phone_number, created_at, updated_at from users
+select id, email, phone_number, password, created_at, updated_at from users
 `
 
 func (q *Queries) GetUser(ctx context.Context) (User, error) {
@@ -71,6 +72,7 @@ func (q *Queries) GetUser(ctx context.Context) (User, error) {
 		&i.ID,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.Password,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -79,12 +81,12 @@ func (q *Queries) GetUser(ctx context.Context) (User, error) {
 
 const updateUser = `-- name: UpdateUser :one
 update users set email = $1, phone_number = $2, updated_at = NOW() where id = $3
-returning id, email, phone_number, created_at, updated_at
+returning id, email, phone_number, password, created_at, updated_at
 `
 
 type UpdateUserParams struct {
-	Email       sql.NullString
-	PhoneNumber sql.NullString
+	Email       string
+	PhoneNumber string
 	ID          uuid.UUID
 }
 
@@ -95,6 +97,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.ID,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.Password,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

@@ -7,7 +7,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,7 +16,7 @@ const deleteSellerAccount = `-- name: DeleteSellerAccount :exec
 delete from sellers where id = $1
 `
 
-func (q *Queries) DeleteSellerAccount(ctx context.Context, id uuid.UUID) error {
+func (q *Queries) DeleteSellerAccount(ctx context.Context, id string) error {
 	_, err := q.db.ExecContext(ctx, deleteSellerAccount, id)
 	return err
 }
@@ -27,7 +26,7 @@ select id, bank_account_holder_name, bank_account_number, ifsc_code, created_at,
 `
 
 type GetSellerBankDetailsRow struct {
-	ID                    uuid.UUID
+	ID                    string
 	BankAccountHolderName string
 	BankAccountNumber     string
 	IfscCode              string
@@ -35,7 +34,7 @@ type GetSellerBankDetailsRow struct {
 	UpdatedAt             time.Time
 }
 
-func (q *Queries) GetSellerBankDetails(ctx context.Context, id uuid.UUID) (GetSellerBankDetailsRow, error) {
+func (q *Queries) GetSellerBankDetails(ctx context.Context, id string) (GetSellerBankDetailsRow, error) {
 	row := q.db.QueryRowContext(ctx, getSellerBankDetails, id)
 	var i GetSellerBankDetailsRow
 	err := row.Scan(
@@ -59,14 +58,14 @@ from sellers join users on sellers.user_id = users.id where sellers.id = $1
 `
 
 type GetSellerContactInfoRow struct {
-	ID          uuid.UUID
-	Email       sql.NullString
-	PhoneNumber sql.NullString
+	ID          string
+	Email       string
+	PhoneNumber string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
 
-func (q *Queries) GetSellerContactInfo(ctx context.Context, id uuid.UUID) (GetSellerContactInfoRow, error) {
+func (q *Queries) GetSellerContactInfo(ctx context.Context, id string) (GetSellerContactInfoRow, error) {
 	row := q.db.QueryRowContext(ctx, getSellerContactInfo, id)
 	var i GetSellerContactInfoRow
 	err := row.Scan(
@@ -84,7 +83,7 @@ select id, gst_number, pan_number, pickup_address, created_at, updated_at from s
 `
 
 type GetSellerTaxAndAddressInfoRow struct {
-	ID            uuid.UUID
+	ID            string
 	GstNumber     string
 	PanNumber     string
 	PickupAddress string
@@ -92,7 +91,7 @@ type GetSellerTaxAndAddressInfoRow struct {
 	UpdatedAt     time.Time
 }
 
-func (q *Queries) GetSellerTaxAndAddressInfo(ctx context.Context, id uuid.UUID) (GetSellerTaxAndAddressInfoRow, error) {
+func (q *Queries) GetSellerTaxAndAddressInfo(ctx context.Context, id string) (GetSellerTaxAndAddressInfoRow, error) {
 	row := q.db.QueryRowContext(ctx, getSellerTaxAndAddressInfo, id)
 	var i GetSellerTaxAndAddressInfoRow
 	err := row.Scan(
@@ -130,11 +129,11 @@ insert into sellers(
     NOW(),
     NOW()
 )
-returning id, gst_number, pan_number, pickup_address, bank_account_holder_name, bank_account_number, ifsc_code, created_at, updated_at, user_id
+returning id, user_id, gst_number, pan_number, pickup_address, bank_account_holder_name, bank_account_number, ifsc_code, created_at, updated_at
 `
 
 type RegisterSellerParams struct {
-	ID                    uuid.UUID
+	ID                    string
 	GstNumber             string
 	PanNumber             string
 	PickupAddress         string
@@ -158,6 +157,7 @@ func (q *Queries) RegisterSeller(ctx context.Context, arg RegisterSellerParams) 
 	var i Seller
 	err := row.Scan(
 		&i.ID,
+		&i.UserID,
 		&i.GstNumber,
 		&i.PanNumber,
 		&i.PickupAddress,
@@ -166,7 +166,6 @@ func (q *Queries) RegisterSeller(ctx context.Context, arg RegisterSellerParams) 
 		&i.IfscCode,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.UserID,
 	)
 	return i, err
 }
@@ -180,11 +179,11 @@ type UpdateSellerBankDetailsParams struct {
 	BankAccountHolderName string
 	BankAccountNumber     string
 	IfscCode              string
-	ID                    uuid.UUID
+	ID                    string
 }
 
 type UpdateSellerBankDetailsRow struct {
-	ID                    uuid.UUID
+	ID                    string
 	BankAccountHolderName string
 	BankAccountNumber     string
 	IfscCode              string
@@ -220,11 +219,11 @@ type UpdateSellerTaxAndAddressParams struct {
 	GstNumber     string
 	PanNumber     string
 	PickupAddress string
-	ID            uuid.UUID
+	ID            string
 }
 
 type UpdateSellerTaxAndAddressRow struct {
-	ID            uuid.UUID
+	ID            string
 	GstNumber     string
 	PanNumber     string
 	PickupAddress string
