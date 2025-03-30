@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/harshvardha/e-commerce/controllers"
 	"github.com/harshvardha/e-commerce/internal/database"
+	"github.com/harshvardha/e-commerce/utility"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/twilio/twilio-go"
@@ -59,10 +61,19 @@ func main() {
 		Password: TWILIO_AUTH_TOKEN,
 	})
 
+	// setting the data validator
+	dataValidator := utility.Validator{
+		Validate: validator.New(),
+	}
+
+	// registering custom password validator
+	dataValidator.Validate.RegisterValidation("password", utility.CustomPasswordValidator)
+
 	// setting twilio config
 	twilioConfig := controllers.TwilioConfig{
 		VERIFY_SERVICE_SID: VERIFY_SERVICE_SID,
 		Client:             client,
+		DataValidator:      dataValidator,
 	}
 
 	//creating database connection
@@ -95,8 +106,10 @@ func main() {
 	})
 
 	// api endpoints for user
-	mux.HandleFunc("POST /api/user/sendOTP", twilioConfig.SendOTPForVerification)
-	mux.HandleFunc("POST /api/user/verifyOTP", apiTwilioConfig.VerifyOtp)
+	mux.HandleFunc("POST /api/auth/sendOTP", twilioConfig.HandleSendOTP)
+	mux.HandleFunc("POST /api/auth/verifyOTP", apiTwilioConfig.HandleVerifyOTP)
+	mux.HandleFunc("POST /api/auth/resendOTP", twilioConfig.HandleResendOTP)
+	mux.HandleFunc("POST /api/auth/login", apiCfg.HandleLogin)
 
 	// starting the server
 	server := &http.Server{

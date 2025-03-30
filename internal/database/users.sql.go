@@ -12,11 +12,12 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-insert into users(id, email, phone_number, created_at, updated_at)
+insert into users(id, email, phone_number, password, created_at, updated_at)
 values(
     gen_random_uuid(),
     $1,
     $2,
+    $3,
     NOW(),
     NOW()
 )
@@ -26,10 +27,11 @@ returning id, email, phone_number, password, created_at, updated_at
 type CreateUserParams struct {
 	Email       string
 	PhoneNumber string
+	Password    string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.Email, arg.PhoneNumber)
+	row := q.db.QueryRowContext(ctx, createUser, arg.Email, arg.PhoneNumber, arg.Password)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -61,12 +63,23 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
-const getUser = `-- name: GetUser :one
-select id, email, phone_number, password, created_at, updated_at from users
+const doesUserExist = `-- name: DoesUserExist :one
+select id from users where phone_number = $1
 `
 
-func (q *Queries) GetUser(ctx context.Context) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser)
+func (q *Queries) DoesUserExist(ctx context.Context, phoneNumber string) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, doesUserExist, phoneNumber)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const getUser = `-- name: GetUser :one
+select id, email, phone_number, password, created_at, updated_at from users where phone_number = $1
+`
+
+func (q *Queries) GetUser(ctx context.Context, phoneNumber string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUser, phoneNumber)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -79,19 +92,30 @@ func (q *Queries) GetUser(ctx context.Context) (User, error) {
 	return i, err
 }
 
+const isUserASeller = `-- name: IsUserASeller :one
+select id from sellers where user_id = $1
+`
+
+func (q *Queries) IsUserASeller(ctx context.Context, userID uuid.UUID) (string, error) {
+	row := q.db.QueryRowContext(ctx, isUserASeller, userID)
+	var id string
+	err := row.Scan(&id)
+	return id, err
+}
+
 const updateUser = `-- name: UpdateUser :one
-update users set email = $1, phone_number = $2, updated_at = NOW() where id = $3
+update users set email = $1, phone_number = $2, password = $3, updated_at = NOW() where id = $3
 returning id, email, phone_number, password, created_at, updated_at
 `
 
 type UpdateUserParams struct {
 	Email       string
 	PhoneNumber string
-	ID          uuid.UUID
+	Password    string
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUser, arg.Email, arg.PhoneNumber, arg.ID)
+	row := q.db.QueryRowContext(ctx, updateUser, arg.Email, arg.PhoneNumber, arg.Password)
 	var i User
 	err := row.Scan(
 		&i.ID,

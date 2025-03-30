@@ -105,6 +105,17 @@ func (q *Queries) GetSellerTaxAndAddressInfo(ctx context.Context, id string) (Ge
 	return i, err
 }
 
+const getStoreID = `-- name: GetStoreID :one
+select id from stores where owner_id = $1
+`
+
+func (q *Queries) GetStoreID(ctx context.Context, ownerID string) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, getStoreID, ownerID)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
 const registerSeller = `-- name: RegisterSeller :one
 insert into sellers(
     id,

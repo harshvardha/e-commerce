@@ -48,3 +48,6 @@ select id, gst_number, pan_number, pickup_address, created_at, updated_at from s
 
 -- name: GetSellerBankDetails :one
 select id, bank_account_holder_name, bank_account_number, ifsc_code, created_at, updated_at from sellers where id = $1;
+
+-- name: GetStoreID :one
+select id from stores where owner_id = $1;
