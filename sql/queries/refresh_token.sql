@@ -9,7 +9,7 @@ values(
 );
 
 -- name: GetRefreshToken :one
-select * from refresh_token;
+select expires_at from refresh_token where user_id = $1;
 
 -- name: UpdateRefreshToken :exec
 update refresh_token set token = $1, updated_at = NOW() where user_id = $2;

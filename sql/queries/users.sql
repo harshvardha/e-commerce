@@ -10,8 +10,11 @@ values(
 )
 returning *;
 
--- name: GetUser :one
-select * from users where phone_number = $1;
+-- name: GetUserByID :one
+select * from users where id = $1;
+
+-- name: GetUserByPhonenumber :one
+select id, email, password from users where phone_number = $1;
 
 -- name: UpdateUser :one
 update users set email = $1, phone_number = $2, password = $3, updated_at = NOW() where id = $3
