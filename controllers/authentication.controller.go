@@ -158,7 +158,7 @@ func (apiConfig *ApiConfig) HandleLogin(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// checking if the user exist or not
-	userExist, err := apiConfig.DB.GetUser(r.Context(), params.Phonenumber)
+	userExist, err := apiConfig.DB.GetUserByPhonenumber(r.Context(), params.Phonenumber)
 	if err != nil {
 		utility.RespondWithError(w, http.StatusNotFound, "User does not exist")
 		return
@@ -215,10 +215,8 @@ func (apiConfig *ApiConfig) HandleLogin(w http.ResponseWriter, r *http.Request) 
 	// sending access token as response for logged in user
 	utility.RespondWithJson(w, http.StatusOK, ResponseUser{
 		Email:       userExist.Email,
-		Phonenumber: userExist.PhoneNumber,
+		Phonenumber: params.Phonenumber,
 		AccessToken: accessToken,
-		CreatedAt:   userExist.CreatedAt,
-		UpdatedAt:   userExist.UpdatedAt,
 	})
 }
 
