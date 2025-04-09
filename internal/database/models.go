@@ -21,6 +21,13 @@ type Admin struct {
 	UpdatedAt   time.Time
 }
 
+type Cart struct {
+	UserID    uuid.UUID
+	ProductID uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 type Category struct {
 	ID          uuid.UUID
 	Name        string
@@ -35,6 +42,39 @@ type Characteristic struct {
 	ProductID   uuid.UUID
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+}
+
+type City struct {
+	ID        uuid.UUID
+	Name      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type Customer struct {
+	ID              uuid.UUID
+	DeliveryAddress string
+	Pincode         string
+	City            uuid.UUID
+	State           uuid.UUID
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+}
+
+type Order struct {
+	ID         uuid.UUID
+	TotalValue float64
+	SellerID   string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
+type OrdersUsersProduct struct {
+	OrderID   uuid.UUID
+	UserID    uuid.UUID
+	ProductID uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Product struct {
@@ -58,6 +98,38 @@ type RefreshToken struct {
 	UpdatedAt time.Time
 }
 
+type Return struct {
+	ID         uuid.UUID
+	SellerID   string
+	TotalValue float64
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
+type ReturnsUsersProduct struct {
+	ReturnID  uuid.UUID
+	UserID    uuid.UUID
+	ProductID uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type Review struct {
+	ID          uuid.UUID
+	Description string
+	UserID      uuid.UUID
+	ProductID   uuid.UUID
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type SavedItem struct {
+	UserID    uuid.UUID
+	ProductID uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 type Seller struct {
 	ID                    string
 	UserID                uuid.UUID
@@ -69,6 +141,13 @@ type Seller struct {
 	IfscCode              string
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
+}
+
+type State struct {
+	ID        uuid.UUID
+	Name      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Store struct {
@@ -86,4 +165,6 @@ type User struct {
 	Password    string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Firstname   string
+	Lastname    string
 }
