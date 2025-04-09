@@ -11,6 +11,16 @@ import (
 	"github.com/google/uuid"
 )
 
+type Admin struct {
+	ID          uuid.UUID
+	Name        string
+	Email       string
+	Phonenumber string
+	Password    string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
 type Category struct {
 	ID          uuid.UUID
 	Name        string

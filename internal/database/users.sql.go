@@ -74,12 +74,12 @@ func (q *Queries) DoesUserExist(ctx context.Context, phoneNumber string) (uuid.U
 	return id, err
 }
 
-const getUser = `-- name: GetUser :one
-select id, email, phone_number, password, created_at, updated_at from users where phone_number = $1
+const getUserByID = `-- name: GetUserByID :one
+select id, email, phone_number, password, created_at, updated_at from users where id = $1
 `
 
-func (q *Queries) GetUser(ctx context.Context, phoneNumber string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser, phoneNumber)
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByID, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -89,6 +89,23 @@ func (q *Queries) GetUser(ctx context.Context, phoneNumber string) (User, error)
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
+	return i, err
+}
+
+const getUserByPhonenumber = `-- name: GetUserByPhonenumber :one
+select id, email, password from users where phone_number = $1
+`
+
+type GetUserByPhonenumberRow struct {
+	ID       uuid.UUID
+	Email    string
+	Password string
+}
+
+func (q *Queries) GetUserByPhonenumber(ctx context.Context, phoneNumber string) (GetUserByPhonenumberRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserByPhonenumber, phoneNumber)
+	var i GetUserByPhonenumberRow
+	err := row.Scan(&i.ID, &i.Email, &i.Password)
 	return i, err
 }
 
