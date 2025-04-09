@@ -197,3 +197,17 @@ type UpdateAdminPhonenumberResponse struct {
 	AccessToken string    `json:"access_token"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
+
+type CreateOrUpdateCategoryRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type CreateCategoryResponse struct {
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	AccessToken string    `json:"access_token"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
