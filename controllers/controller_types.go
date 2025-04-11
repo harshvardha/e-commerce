@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -210,4 +211,34 @@ type CreateCategoryResponse struct {
 	AccessToken string    `json:"access_token"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type CreateOrUpdateProductRequest struct {
+	Name            string            `json:"name"`
+	Description     map[string]string `json:"description"`
+	Characteristics map[string]string `json:"characteristics"`
+	Price           float64           `json:"price"`
+	ImageUrls       map[string]string `json:"image_urls"`
+	StockAmount     int32             `json:"stock_amount"`
+	CategoryID      uuid.UUID         `json:"category_id"`
+}
+
+type ProductResponse struct {
+	ID              uuid.UUID       `json:"id"`
+	Name            string          `json:"name"`
+	Description     json.RawMessage `json:"description"`
+	Characteristics json.RawMessage `json:"characteristics"`
+	Price           float64         `json:"price"`
+	ImageUrls       json.RawMessage `json:"image_urls"`
+	StockAmount     int32           `json:"stock_amount"`
+	StoreID         uuid.UUID       `json:"store_id"`
+	CategoryID      uuid.UUID       `json:"category_id"`
+	AccessToken     string          `json:"access_token"`
+	CreatedAt       time.Time       `json:"created_at"`
+	UpdatedAt       time.Time       `json:"updated_at"`
+}
+
+type ProductsByCategoryOrStoreID struct {
+	Products    []database.Product `json:"products"`
+	AccessToken string             `json:"access_token"`
 }
