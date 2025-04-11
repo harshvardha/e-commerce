@@ -1,5 +1,7 @@
 package controllers
 
+// create a middleware to check for the category_id param in the url
+
 import (
 	"encoding/json"
 	"net/http"
