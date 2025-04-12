@@ -49,6 +49,7 @@ type City struct {
 	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	State     uuid.UUID
 }
 
 type Customer struct {

@@ -242,3 +242,47 @@ type ProductsByCategoryOrStoreID struct {
 	Products    []database.Product `json:"products"`
 	AccessToken string             `json:"access_token"`
 }
+
+type CustomerResponse struct {
+	ID              uuid.UUID `json:"id"`
+	DeliveryAddress string    `json:"delivery_address"`
+	Pincode         string    `json:"pincode"`
+	City            string    `json:"city"`
+	State           string    `json:"state"`
+	AccessToken     string    `json:"access_token"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at"`
+}
+
+type UpdateCustomerAddress struct {
+	DeliveryAddress string    `json:"delivery_address"`
+	Pincode         string    `json:"pincode"`
+	City            uuid.UUID `json:"city"`
+	State           uuid.UUID `json:"state"`
+}
+
+type AddOrUpdateStateRequest struct {
+	Name string `json:"name"`
+}
+
+type StateResponse struct {
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	AccessToken string    `json:"access_token"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type AddOrUpdateCityRequest struct {
+	Name  string    `json:"name"`
+	State uuid.UUID `json:"state"`
+}
+
+type CityResponse struct {
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	State       string    `json:"state"`
+	AccessToken string    `json:"access_token"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
