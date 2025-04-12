@@ -49,6 +49,10 @@ func (apiConfig *ApiConfig) HandleUpdateCategory(w http.ResponseWriter, r *http.
 		return
 	}
 	categoryID, err := uuid.Parse(categoryIDString)
+	if err != nil {
+		utility.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	// decoding the request body
 	decoder := json.NewDecoder(r.Body)
