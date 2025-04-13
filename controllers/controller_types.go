@@ -298,3 +298,7 @@ type ReviewResponse struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
+
+type AddProductToCartRequest struct {
+	Quantity int32 `json:"quantity"`
+}
