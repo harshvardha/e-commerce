@@ -26,6 +26,7 @@ type Cart struct {
 	ProductID uuid.UUID
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	Quantity  int32
 }
 
 type Category struct {
