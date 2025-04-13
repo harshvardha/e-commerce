@@ -286,3 +286,15 @@ type CityResponse struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
+
+type CreateOrUpdateReviewRequest struct {
+	Description string `json:"description"`
+}
+
+type ReviewResponse struct {
+	ID          uuid.UUID `json:"id"`
+	Description string    `json:"description"`
+	AccessToken string    `json:"access_token"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
