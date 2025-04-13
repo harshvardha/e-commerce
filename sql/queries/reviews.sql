@@ -8,7 +8,7 @@ values(
     NOW(),
     NOW()
 )
-returning *;
+returning id, description, created_at, updated_at;
 
 -- name: UpdateReview :one
 update reviews set description = $1, updated_at = NOW() where id = $2 and user_id = $3
@@ -16,6 +16,9 @@ returning description, created_at, updated_at;
 
 -- name: RemoveReview :exec
 delete from reviews where id = $1 and user_id = $2;
+
+-- name: GetReviewByID :one
+select description from reviews where id = $1;
 
 -- name: GetReviewsByUserID :many
 select * from reviews where user_id = $1;

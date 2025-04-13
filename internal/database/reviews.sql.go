@@ -22,7 +22,7 @@ values(
     NOW(),
     NOW()
 )
-returning id, description, user_id, product_id, created_at, updated_at
+returning id, description, created_at, updated_at
 `
 
 type CreateReviewParams struct {
@@ -31,18 +31,34 @@ type CreateReviewParams struct {
 	ProductID   uuid.UUID
 }
 
-func (q *Queries) CreateReview(ctx context.Context, arg CreateReviewParams) (Review, error) {
+type CreateReviewRow struct {
+	ID          uuid.UUID
+	Description string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+func (q *Queries) CreateReview(ctx context.Context, arg CreateReviewParams) (CreateReviewRow, error) {
 	row := q.db.QueryRowContext(ctx, createReview, arg.Description, arg.UserID, arg.ProductID)
-	var i Review
+	var i CreateReviewRow
 	err := row.Scan(
 		&i.ID,
 		&i.Description,
-		&i.UserID,
-		&i.ProductID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const getReviewByID = `-- name: GetReviewByID :one
+select description from reviews where id = $1
+`
+
+func (q *Queries) GetReviewByID(ctx context.Context, id uuid.UUID) (string, error) {
+	row := q.db.QueryRowContext(ctx, getReviewByID, id)
+	var description string
+	err := row.Scan(&description)
+	return description, err
 }
 
 const getReviewsByProductID = `-- name: GetReviewsByProductID :many
