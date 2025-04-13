@@ -302,3 +302,8 @@ type ReviewResponse struct {
 type AddProductToCartRequest struct {
 	Quantity int32 `json:"quantity"`
 }
+
+type OrderDetailsResponse struct {
+	OrderDetails []database.GetOrderDetailsRow `json:"order_details"`
+	AccessToken  string                        `json:"access_token"`
+}
