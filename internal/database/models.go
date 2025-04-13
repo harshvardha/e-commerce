@@ -69,6 +69,14 @@ type Order struct {
 	SellerID   string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	Status     uuid.UUID
+}
+
+type OrderStatus struct {
+	ID        uuid.UUID
+	Status    string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type OrdersUsersProduct struct {
@@ -77,6 +85,7 @@ type OrdersUsersProduct struct {
 	ProductID uuid.UUID
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	Quantity  int32
 }
 
 type Product struct {
